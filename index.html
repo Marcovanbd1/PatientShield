@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexacom · Emotional Architecture Applied</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: #ffffff; color: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 660px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  .opener { padding: 5rem 0 3.5rem; border-bottom: 1px solid #e8e8e8; margin-bottom: 4rem; }
+  .opener-label { font-size: 11px; color: #888; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 2rem; }
+  .opener-heading { font-size: 36px; font-weight: 500; color: #0f0f0f; line-height: 1.2; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+  .opener-sub { font-size: 17px; color: #555; line-height: 1.9; max-width: 560px; }
+  .section { margin-bottom: 4rem; }
+  .section-label { font-size: 11px; color: #888; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.25rem; }
+  .body-text { font-size: 16px; color: #222; line-height: 1.95; margin-bottom: 1.25rem; }
+  .body-text:last-child { margin-bottom: 0; }
+  .pull-quote { border-left: 2px solid #1d4ed8; padding: 0.25rem 0 0.25rem 1.5rem; margin: 2.5rem 0; }
+  .pull-quote-text { font-size: 22px; font-weight: 400; color: #0f0f0f; line-height: 1.45; font-style: italic; }
+  .divider { height: 1px; background: #e8e8e8; margin: 3.5rem 0; }
+
+  .screen-row { display: flex; gap: 16px; margin: 2.5rem 0; justify-content: center; flex-wrap: wrap; }
+  .screen-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .screen-caption { font-size: 11px; color: #888; text-align: center; max-width: 150px; line-height: 1.6; }
+  .screen-caption strong { color: #555; font-weight: 500; }
+
+  .device { background: #f5f5f5; border-radius: 24px; width: 148px; padding: 14px 10px 16px; border: 1.5px solid #d1d5db; display: flex; flex-direction: column; }
+  .d-status { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .d-time { font-size: 8px; font-weight: 600; color: #111; }
+  .d-title { font-size: 10px; font-weight: 600; color: #111; margin-bottom: 8px; }
+  .d-nav { display: flex; justify-content: space-around; padding-top: 8px; border-top: 0.5px solid #e5e7eb; margin-top: auto; }
+  .d-nav-dot { width: 10px; height: 6px; background: #e5e7eb; border-radius: 1px; }
+  .d-nav-dot.on { background: #2563eb; }
+
+  .ea-label { display: inline-flex; align-items: center; gap: 6px; background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 20px; padding: 4px 12px; margin-bottom: 1.5rem; }
+  .ea-label-dot { width: 6px; height: 6px; border-radius: 50%; background: #2563eb; }
+  .ea-label-text { font-size: 11px; color: #1d4ed8; font-weight: 500; letter-spacing: 0.04em; }
+
+  .before-label { display: inline-flex; align-items: center; gap: 6px; background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 20px; padding: 4px 12px; margin-bottom: 1rem; }
+  .before-label-text { font-size: 11px; color: #888; letter-spacing: 0.06em; text-transform: uppercase; }
+  .after-label { display: inline-flex; align-items: center; gap: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 20px; padding: 4px 12px; margin-bottom: 1rem; }
+  .after-label-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+  .after-label-text { font-size: 11px; color: #15803d; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+
+  .word-pair { display: flex; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e8e8e8; }
+  .word-before { flex: 1; background: #f7f7f7; padding: 12px 16px; border-right: 1px solid #e8e8e8; }
+  .word-after { flex: 1; background: #fff; padding: 12px 16px; }
+  .word-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .word-val { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .word-val.muted { color: #bbb; }
+
+  .shield-hero { background: #0a0f1a; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+  .sh-top { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .sh-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; flex-shrink: 0; animation: br 2s ease-in-out infinite; }
+  .sh-heading { font-size: 16px; font-weight: 500; color: #e0e4ef; }
+  .sh-body { font-size: 14px; color: #6b7280; line-height: 1.85; margin-bottom: 1.25rem; }
+  .sh-body strong { color: #93c5fd; font-weight: 500; }
+  .sh-quote { border-left: 2px solid #1d4ed8; padding: 0.25rem 0 0.25rem 1.25rem; }
+  .sh-quote-text { font-size: 16px; color: #e0e4ef; font-style: italic; line-height: 1.5; }
+
+  .travels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.5rem 0; }
+  .travel-card { background: #f8f9fa; border: 1px solid #e8e8e8; border-radius: 10px; padding: 14px; }
+  .tc-icon { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .tc-title { font-size: 13px; font-weight: 500; color: #0f0f0f; margin-bottom: 4px; }
+  .tc-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+  .pulse-row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin: 2.5rem 0; align-items: flex-start; }
+  .pulse-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .pulse-device { background: #f5f5f5; border-radius: 32px; width: 160px; height: 300px; border: 1.5px solid #d1d5db; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .pulse-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 50px; height: 7px; background: #d1d5db; border-radius: 4px; }
+  .pulse-screen { width: 100%; height: 100%; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .ps-blue { background: #0a0f1a; }
+  .ps-green { background: #0a1a0f; }
+
+  .ring-wrap { position: relative; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid; }
+  .ro { width: 72px; height: 72px; }
+  .rm { width: 54px; height: 54px; }
+  .ri { width: 38px; height: 38px; opacity: 0.7; }
+
+  .rb .ro { border-color: #1d4ed8; animation: po 2s ease-out infinite; }
+  .rb .rm { border-color: #1d4ed8; animation: po 2s ease-out infinite 0.35s; }
+  .rb .ri { border-color: #2563eb; }
+  .rg .ro { border-color: #16a34a; animation: po 2s ease-out infinite; }
+  .rg .rm { border-color: #16a34a; animation: po 2s ease-out infinite 0.35s; }
+  .rg .ri { border-color: #22c55e; }
+
+  .core { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: br 2s ease-in-out infinite; }
+  .cb { background: #1d4ed8; }
+  .cg { background: #15803d; }
+
+  @keyframes po { 0% { transform: scale(0.85); opacity: 0.35; } 100% { transform: scale(1.15); opacity: 0; } }
+  @keyframes br { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+  .pulse-badge { position: absolute; top: 22px; right: 18px; width: 18px; height: 18px; border-radius: 50%; background: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: white; }
+  .pulse-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+  .pulse-name-b { color: #93c5fd; }
+  .pulse-name-g { color: #86efac; }
+  .pulse-status { display: flex; align-items: center; gap: 5px; }
+  .ps-dot { width: 5px; height: 5px; border-radius: 50%; animation: br 2s ease-in-out infinite; }
+  .ps-dot-b { background: #22c55e; }
+  .ps-dot-g { background: #4ade80; }
+  .ps-txt { font-size: 9px; }
+  .ps-txt-b { color: #4ade80; }
+  .ps-txt-g { color: #86efac; }
+  .pulse-tap { position: absolute; bottom: 22px; font-size: 8px; opacity: 0.35; letter-spacing: 0.06em; }
+  .pt-b { color: #93c5fd; }
+  .pt-g { color: #86efac; }
+
+  .dest-card { background: #f8faff; border: 1px solid #dbeafe; border-radius: 10px; width: 160px; padding: 10px 12px; }
+  .dest-card-g { background: #f0fdf4; border-color: #bbf7d0; }
+  .dest-dest { font-size: 8px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+  .dest-title { font-size: 12px; font-weight: 600; color: #111; margin-bottom: 8px; }
+  .dest-job { display: flex; align-items: center; gap: 6px; background: white; border-radius: 5px; padding: 6px 8px; border: 1px solid #e5e7eb; }
+  .dj-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .dj-name { font-size: 8px; font-weight: 600; color: #111; }
+  .dj-type { font-size: 7px; color: #6b7280; }
+  .dest-listen { display: flex; align-items: center; gap: 8px; }
+  .dl-ring { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #1d4ed8; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dl-core { width: 14px; height: 14px; border-radius: 50%; background: #1d4ed8; }
+  .dl-txt { font-size: 8px; color: #374151; line-height: 1.5; }
+  .pulse-caption { font-size: 11px; color: #888; text-align: center; max-width: 160px; line-height: 1.6; }
+
+  .note-hl { color: #1d4ed8; font-weight: 500; }
+  .job-card { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 8px 10px; margin-bottom: 7px; }
+  .jc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+  .jc-name { font-size: 9px; font-weight: 600; color: #111; }
+  .jc-type { font-size: 7px; color: #6b7280; }
+  .jc-badge { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 2px 6px; font-size: 7px; color: #15803d; font-weight: 500; }
+  .jc-snippet { font-size: 7px; color: #374151; line-height: 1.5; background: #f8fafc; border-radius: 4px; padding: 5px 6px; margin-bottom: 6px; }
+  .jc-actions { display: flex; gap: 4px; }
+  .jc-btn-ghost { flex: 1; background: #f3f4f6; border-radius: 6px; padding: 4px; text-align: center; font-size: 7px; color: #374151; }
+  .jc-btn-solid { flex: 1; background: #2563eb; border-radius: 6px; padding: 4px; text-align: center; font-size: 7px; color: white; font-weight: 500; }
+  .amber-flag { background: #fffbeb; border: 1px solid #fde68a; border-radius: 5px; padding: 5px 7px; margin-bottom: 7px; display: flex; align-items: center; gap: 5px; }
+  .af-dot { width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; flex-shrink: 0; }
+  .af-txt { font-size: 7px; color: #92400e; line-height: 1.4; }
+  .complete-btn { background: #2563eb; border-radius: 14px; padding: 7px; text-align: center; font-size: 8px; color: white; font-weight: 500; }
+  .shield-status { display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px; }
+  .ss-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
+  .ss-txt { font-size: 7px; color: #6b7280; }
+
+  .closer { padding: 2.5rem 0 1rem; }
+  .closer-heading { font-size: 26px; font-weight: 500; color: #0f0f0f; line-height: 1.35; margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+  .closer-body { font-size: 16px; color: #444; line-height: 1.95; margin-bottom: 1.25rem; }
+  .sig { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e8e8e8; }
+  .sig-name { font-size: 15px; font-weight: 500; color: #0f0f0f; margin-bottom: 4px; }
+  .sig-title { font-size: 13px; color: #888; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="opener">
+    <div class="opener-label">For Andrew Whiteley · Lexacom</div>
+    <div class="opener-heading">What happens when you design with Emotional Architecture.</div>
+    <div class="opener-sub">Lexacom is the most technically accomplished clinical platform in the UK. This is a demonstration of what it looks and feels like when Emotional Architecture is applied to it, and what that process revealed about the most powerful feature in the product.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">What is Emotional Architecture</div>
+    <div class="ea-label"><div class="ea-label-dot"></div><div class="ea-label-text">A design discipline and a practice</div></div>
+    <p class="body-text">Emotional Architecture is the discipline concerned with how systems understand and respond to the emotional climate around a person, attending to tone, readiness, confidence, overwhelm, and social context. It treats emotion as structure rather than decoration.</p>
+    <p class="body-text">It is part design discipline, part practice. The principles can be learned. The application takes a lifetime to refine. In that way it is not unlike the best clinical instincts.</p>
+    <div class="pull-quote">
+      <div class="pull-quote-text">The goal is to create products that feel like they understand the human in front of them.</div>
+    </div>
+    <p class="body-text">When EA is applied to a clinical product the first question it asks is this: how does the person feel when they open this, and what does the design reveal about that feeling?</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">The starting point · Lexacom before EA</div>
+    <p class="body-text">Lexacom was chosen for this demonstration because it is genuinely extraordinary. Twenty-five years of NHS trust. Comprehension Engine. Ambient AI that listens without interrupting. A platform that does things no competitor can claim in a single product.</p>
+    <p class="body-text">The technology is flawless. EA begins with the experience of arriving at it.</p>
+
+    <div style="text-align:center;margin-bottom:8px;"><div class="before-label"><div class="before-label-text">Before EA</div></div></div>
+
+    <div class="screen-row">
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:32</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div class="d-title">Jobs</div>
+          <div style="font-size:7px;color:#6b7280;text-align:center;margin-bottom:6px;">Showing 1 of 1 jobs</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:0.5px solid #e5e7eb;margin-bottom:8px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0;"></div>
+            <div><div style="font-size:8px;font-weight:600;color:#111;">Gladys Smith</div><div style="font-size:7px;color:#6b7280;">Review Nursing Home Visit</div></div>
+          </div>
+          <div style="background:#2563eb;border-radius:12px;padding:6px;text-align:center;font-size:7px;color:white;">New job &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>Function without feeling. The job is there. Its urgency is not communicated.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:27</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div class="d-title">Ambient AI</div>
+          <div style="background:#dc2626;border-radius:10px;padding:5px 8px;text-align:center;font-size:7px;color:white;margin-bottom:8px;">&#9679; Record</div>
+          <div style="background:white;border-radius:6px;border:1px solid #e5e7eb;padding:7px;margin-bottom:7px;flex:1;">
+            <div style="font-size:6px;font-weight:600;color:#374151;margin-bottom:3px;">History:</div>
+            <div style="font-size:6px;color:#4b5563;line-height:1.5;">Patient presents with chest pain... Red flags: none identified...</div>
+          </div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;">Create Job</div>
+          <div class="d-nav"><div class="d-nav-dot"></div><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>The output is extraordinary. The emotional frame around it has room to grow.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:33</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="font-size:10px;font-weight:600;color:#111;margin-bottom:8px;">Edit Job</div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:3px;">Reference</div>
+          <div style="border:1px solid #e5e7eb;border-radius:4px;padding:5px 7px;font-size:8px;color:#111;margin-bottom:8px;">Gladys Smith</div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:3px;">Comprehension Engine</div>
+          <div style="background:white;border:1px solid #e5e7eb;border-radius:5px;padding:6px;font-size:6px;color:#374151;line-height:1.5;margin-bottom:8px;flex:1;">O&#x2082; sat 83%. HR 140. <span style="color:#1d4ed8;font-weight:500;">Worsening heart failure.</span></div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;">&#10003; Complete</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>Process language surrounds clinical content. Gladys Smith is a reference field.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The platform works. The clinical output is remarkable. When EA is applied the question becomes: what is the emotional climate of each screen, and what does it communicate to the person holding the phone?</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">What EA does to the language</div>
+    <p class="body-text">The first layer of Emotional Architecture is language. Every word in a product is a decision about how someone feels. When EA is applied, those decisions become visible and intentional.</p>
+    <div style="margin:1.75rem 0;">
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Jobs</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Notes</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Ambient AI</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Listen</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Edit Job</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Gladys Smith</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Complete</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Approve and send</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Access Restricted</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Here's what's waiting for you.</div></div></div>
+    </div>
+    <p class="body-text">Each shift changes the emotional climate of the interaction. That is the observable difference between a tool someone tolerates and a product someone loves.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">What EA revealed · the buried treasure</div>
+    <p class="body-text">When Emotional Architecture is applied to a product it surfaces what is already there. In Lexacom, it found something extraordinary sitting quietly in a compliance document.</p>
+
+    <div class="shield-hero">
+      <div class="sh-top"><div class="sh-dot"></div><div class="sh-heading">Patient Shield.</div></div>
+      <div class="sh-body">Lexacom is the only clinical AI platform that <strong>redacts patient data before it reaches the AI.</strong> The patient's identity never enters the model. This is an architectural decision and it is the answer to every clinician's unspoken anxiety about ambient AI in the room.</div>
+      <div class="sh-quote">
+        <div class="sh-quote-text">"Your patient's data is protected before AI sees it." Nobody else in the market can say this.</div>
+      </div>
+    </div>
+
+    <p class="body-text">EA moves Patient Shield to the surface. A GP who can turn to their patient mid-consultation and say "this protects your data before AI touches it" creates a trust moment that changes the room.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Where Patient Shield travels</div>
+    <p class="body-text">The redaction principle has a life beyond primary care. Wherever a professional speaks about another person in a sensitive context, the same architectural decision applies.</p>
+
+    <div class="travels-grid">
+      <div class="travel-card">
+        <div class="tc-icon">Legal</div>
+        <div class="tc-title">Solicitors and barristers</div>
+        <div class="tc-body">Privileged client information. A confession. A commercial secret. The redaction principle applies with the same force it does in a consulting room.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Social work</div>
+        <div class="tc-title">Case workers and ARRS roles</div>
+        <div class="tc-body">Notes about vulnerable children, domestic abuse situations, safeguarding cases. Redaction here carries the same professional weight.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Mental health</div>
+        <div class="tc-title">Therapists and psychiatrists</div>
+        <div class="tc-body">The most sensitive data that exists. Therapy session content is among the most private information a person can share. Patient Shield was built for exactly this.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Financial services</div>
+        <div class="tc-title">IFAs and wealth managers</div>
+        <div class="tc-body">Client financial conversations in a regulated environment. The redaction principle travels identically from clinic to boardroom.</div>
+      </div>
+    </div>
+
+    <p class="body-text">Andrew built the answer to a question the whole market is about to start asking. EA is what makes that visible.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Lexacom after EA · the same workflow</div>
+    <p class="body-text">Here is the same workflow, Gladys Smith, nursing home visit, as it feels when Emotional Architecture is applied throughout. The technology is identical. The emotional climate is transformed.</p>
+
+    <div style="text-align:center;margin-bottom:8px;"><div class="after-label"><div class="after-label-dot"></div><div class="after-label-text">After EA</div></div></div>
+
+    <div class="screen-row">
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:32</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:600;color:#111;">Notes</div>
+            <div style="font-size:7px;color:#6b7280;">1 needs you</div>
+          </div>
+          <div class="job-card">
+            <div class="jc-top"><div><div class="jc-name">Gladys Smith</div><div class="jc-type">Nursing Home Visit</div></div><div class="jc-badge">Approve</div></div>
+            <div class="jc-snippet">O&#x2082; sat 83%. HR 140. <span style="color:#1d4ed8;font-weight:500;">Worsening heart failure.</span></div>
+            <div class="jc-actions"><div class="jc-btn-ghost">Review</div><div class="jc-btn-solid">&#10003; Approve</div></div>
+          </div>
+          <div class="shield-status"><div class="ss-dot"></div><div class="ss-txt">Patient Shield active</div></div>
+          <div style="background:#2563eb;border-radius:12px;padding:6px;text-align:center;font-size:7px;color:white;">Start new note &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Patient name leads. Urgency is visible. Shield is present.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:27</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;">
+            <div style="font-size:10px;font-weight:600;color:#111;">Listen</div>
+            <div style="display:flex;align-items:center;gap:3px;"><div style="width:4px;height:4px;border-radius:50%;background:#22c55e;"></div><div style="font-size:7px;color:#22c55e;">Shield on</div></div>
+          </div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:8px;">Quietly in the room with you.</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="background:#1d4ed8;border-radius:12px;padding:5px 10px;font-size:7px;color:white;display:flex;align-items:center;gap:4px;"><div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5);"></div>Listening</div>
+            <div style="background:#2563eb;border-radius:12px;padding:5px 10px;font-size:7px;color:white;">Generate</div>
+          </div>
+          <div style="background:white;border-radius:6px;border:1px solid #e5e7eb;padding:7px;margin-bottom:7px;flex:1;">
+            <div style="font-size:6px;font-weight:600;color:#374151;margin-bottom:3px;">History:</div>
+            <div style="font-size:6px;color:#4b5563;line-height:1.5;">Chest pain, intermittent. No red flags. PMH: migraines, high BP.</div>
+          </div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;margin-top:auto;">Save to notes &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot"></div><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Red becomes blue. Record becomes Listening. Shield surfaces in the room.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:33</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="margin-bottom:8px;"><div style="font-size:10px;font-weight:600;color:#111;">Gladys Smith</div><div style="font-size:7px;color:#6b7280;">Nursing Home Visit · ready for review</div></div>
+          <div style="background:#f8fafc;border-radius:5px;padding:6px;font-size:6px;color:#374151;line-height:1.5;margin-bottom:6px;">O&#x2082; sat 83%. HR 140. BP 100/60. <span class="note-hl">Worsening heart failure.</span></div>
+          <div class="amber-flag"><div class="af-dot"></div><div class="af-txt">Clinical finding flagged. Review before approving.</div></div>
+          <div style="display:flex;gap:4px;margin-bottom:6px;">
+            <div style="flex:1;background:#f3f4f6;border-radius:6px;padding:4px;text-align:center;font-size:6px;color:#374151;">Hold</div>
+            <div style="flex:1;background:#f3f4f6;border-radius:6px;padding:4px;text-align:center;font-size:6px;color:#374151;">Add note</div>
+          </div>
+          <div class="complete-btn">&#10003; Approve and send</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Patient name leads. Clinical flag surfaces. Approve and send.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">The hello moment · EA at its most distilled</div>
+    <p class="body-text">The purest expression of Emotional Architecture in Lexacom is a screen that does not yet exist. A single second before the work begins. A breath. The app confirming it is alive, that Patient Shield is active, and that it already knows whether something is waiting.</p>
+    <p class="body-text">One tap. Two possible states. The app reads the situation and opens the right door.</p>
+
+    <div class="pulse-row">
+      <div class="pulse-col">
+        <div class="pulse-device">
+          <div class="pulse-notch"></div>
+          <div class="pulse-badge">1</div>
+          <div class="pulse-screen ps-blue">
+            <div class="ring-wrap rb">
+              <div class="ring ro"></div><div class="ring rm"></div><div class="ring ri"></div>
+              <div class="core cb"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L2 4v4c0 2.8 2.1 4.8 5 5 2.9-.2 5-2.2 5-5V4L7 1.5z" stroke="white" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+            </div>
+            <div class="pulse-name pulse-name-b">Lexacom</div>
+            <div class="pulse-status"><div class="ps-dot ps-dot-b"></div><div class="ps-txt ps-txt-b">Shield active</div></div>
+            <div class="pulse-tap pt-b">tap anywhere</div>
+          </div>
+        </div>
+        <div class="dest-card">
+          <div class="dest-dest">One tap opens</div>
+          <div class="dest-title">Notes</div>
+          <div class="dest-job"><div class="dj-dot"></div><div><div class="dj-name">Gladys Smith</div><div class="dj-type">Nursing Home Visit · ready to approve</div></div></div>
+        </div>
+        <div class="pulse-caption"><strong>Note waiting.</strong> Blue pulse. One tap to the thing that needs doing.</div>
+      </div>
+
+      <div class="pulse-col">
+        <div class="pulse-device">
+          <div class="pulse-notch"></div>
+          <div class="pulse-screen ps-green">
+            <div class="ring-wrap rg">
+              <div class="ring ro"></div><div class="ring rm"></div><div class="ring ri"></div>
+              <div class="core cg"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L2 4v4c0 2.8 2.1 4.8 5 5 2.9-.2 5-2.2 5-5V4L7 1.5z" stroke="white" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+            </div>
+            <div class="pulse-name pulse-name-g">Lexacom</div>
+            <div class="pulse-status"><div class="ps-dot ps-dot-g"></div><div class="ps-txt ps-txt-g">You're clear</div></div>
+            <div class="pulse-tap pt-g">tap anywhere</div>
+          </div>
+        </div>
+        <div class="dest-card dest-card-g">
+          <div class="dest-dest">One tap opens</div>
+          <div class="dest-title">Listen</div>
+          <div class="dest-listen"><div class="dl-ring"><div class="dl-core"></div></div><div class="dl-txt">Ready to record.<br>Speak naturally.</div></div>
+        </div>
+        <div class="pulse-caption"><strong>All clear.</strong> Green pulse. One tap to start recording.</div>
+      </div>
+    </div>
+
+    <p class="body-text">Blue means something is waiting. Green means space. The clinician reads the colour before they read the words. Patient Shield is present in both states, a constant the green dot communicates before anything else is read.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="closer">
+    <div class="closer-heading">You are the person who breathes life into this.</div>
+    <p class="closer-body">You built Lexacom at night because you felt something was wrong and you knew how to fix it. That instinct is still there. The technology has never been stronger. The clinical trust has never been deeper. Twenty-five thousand users are carrying something in their pocket that does not yet know how extraordinary it is.</p>
+    <p class="closer-body">Emotional Architecture is a discipline applied to what already exists. What it found inside Lexacom, sitting quietly in a compliance document, is the most important data protection principle in clinical AI. Patient Shield has the potential to travel far beyond primary care and into every profession that handles sensitive spoken information.</p>
+    <p class="closer-body">You built the foundation. The life is the next thing.</p>
+    <div class="sig">
+      <div class="sig-name">Mark Winterburn</div>
+      <div class="sig-title">Digital and Transformation Lead · Weymouth and Portland PCN<br>Co-Director · Neighbourhood CoLab CIC</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexacom · Emotional Architecture Applied</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: #ffffff; color: #1a1a1a; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .page { max-width: 660px; margin: 0 auto; padding: 0 1.5rem 6rem; }
+  .opener { padding: 5rem 0 3.5rem; border-bottom: 1px solid #e8e8e8; margin-bottom: 4rem; }
+  .opener-label { font-size: 11px; color: #888; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 2rem; }
+  .opener-heading { font-size: 36px; font-weight: 500; color: #0f0f0f; line-height: 1.2; margin-bottom: 1.5rem; letter-spacing: -0.02em; }
+  .opener-sub { font-size: 17px; color: #555; line-height: 1.9; max-width: 560px; }
+  .section { margin-bottom: 4rem; }
+  .section-label { font-size: 11px; color: #888; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.25rem; }
+  .body-text { font-size: 16px; color: #222; line-height: 1.95; margin-bottom: 1.25rem; }
+  .body-text:last-child { margin-bottom: 0; }
+  .pull-quote { border-left: 2px solid #1d4ed8; padding: 0.25rem 0 0.25rem 1.5rem; margin: 2.5rem 0; }
+  .pull-quote-text { font-size: 22px; font-weight: 400; color: #0f0f0f; line-height: 1.45; font-style: italic; }
+  .divider { height: 1px; background: #e8e8e8; margin: 3.5rem 0; }
+
+  .screen-row { display: flex; gap: 16px; margin: 2.5rem 0; justify-content: center; flex-wrap: wrap; }
+  .screen-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .screen-caption { font-size: 11px; color: #888; text-align: center; max-width: 150px; line-height: 1.6; }
+  .screen-caption strong { color: #555; font-weight: 500; }
+
+  .device { background: #f5f5f5; border-radius: 24px; width: 148px; padding: 14px 10px 16px; border: 1.5px solid #d1d5db; display: flex; flex-direction: column; }
+  .d-status { display: flex; justify-content: space-between; margin-bottom: 10px; }
+  .d-time { font-size: 8px; font-weight: 600; color: #111; }
+  .d-title { font-size: 10px; font-weight: 600; color: #111; margin-bottom: 8px; }
+  .d-nav { display: flex; justify-content: space-around; padding-top: 8px; border-top: 0.5px solid #e5e7eb; margin-top: auto; }
+  .d-nav-dot { width: 10px; height: 6px; background: #e5e7eb; border-radius: 1px; }
+  .d-nav-dot.on { background: #2563eb; }
+
+  .ea-label { display: inline-flex; align-items: center; gap: 6px; background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 20px; padding: 4px 12px; margin-bottom: 1.5rem; }
+  .ea-label-dot { width: 6px; height: 6px; border-radius: 50%; background: #2563eb; }
+  .ea-label-text { font-size: 11px; color: #1d4ed8; font-weight: 500; letter-spacing: 0.04em; }
+
+  .before-label { display: inline-flex; align-items: center; gap: 6px; background: #f7f7f7; border: 1px solid #e8e8e8; border-radius: 20px; padding: 4px 12px; margin-bottom: 1rem; }
+  .before-label-text { font-size: 11px; color: #888; letter-spacing: 0.06em; text-transform: uppercase; }
+  .after-label { display: inline-flex; align-items: center; gap: 6px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 20px; padding: 4px 12px; margin-bottom: 1rem; }
+  .after-label-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+  .after-label-text { font-size: 11px; color: #15803d; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 500; }
+
+  .word-pair { display: flex; margin-bottom: 10px; border-radius: 8px; overflow: hidden; border: 1px solid #e8e8e8; }
+  .word-before { flex: 1; background: #f7f7f7; padding: 12px 16px; border-right: 1px solid #e8e8e8; }
+  .word-after { flex: 1; background: #fff; padding: 12px 16px; }
+  .word-label { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+  .word-val { font-size: 14px; font-weight: 500; color: #1a1a1a; }
+  .word-val.muted { color: #bbb; }
+
+  .shield-hero { background: #0a0f1a; border-radius: 16px; padding: 2rem; margin: 2rem 0; }
+  .sh-top { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  .sh-dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; flex-shrink: 0; animation: br 2s ease-in-out infinite; }
+  .sh-heading { font-size: 16px; font-weight: 500; color: #e0e4ef; }
+  .sh-body { font-size: 14px; color: #6b7280; line-height: 1.85; margin-bottom: 1.25rem; }
+  .sh-body strong { color: #93c5fd; font-weight: 500; }
+  .sh-quote { border-left: 2px solid #1d4ed8; padding: 0.25rem 0 0.25rem 1.25rem; }
+  .sh-quote-text { font-size: 16px; color: #e0e4ef; font-style: italic; line-height: 1.5; }
+
+  .travels-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 1.5rem 0; }
+  .travel-card { background: #f8f9fa; border: 1px solid #e8e8e8; border-radius: 10px; padding: 14px; }
+  .tc-icon { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+  .tc-title { font-size: 13px; font-weight: 500; color: #0f0f0f; margin-bottom: 4px; }
+  .tc-body { font-size: 12px; color: #555; line-height: 1.7; }
+
+  .pulse-row { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; margin: 2.5rem 0; align-items: flex-start; }
+  .pulse-col { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .pulse-device { background: #f5f5f5; border-radius: 32px; width: 160px; height: 300px; border: 1.5px solid #d1d5db; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .pulse-notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 50px; height: 7px; background: #d1d5db; border-radius: 4px; }
+  .pulse-screen { width: 100%; height: 100%; border-radius: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+  .ps-blue { background: #0a0f1a; }
+  .ps-green { background: #0a1a0f; }
+
+  .ring-wrap { position: relative; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .ring { position: absolute; border-radius: 50%; border: 1px solid; }
+  .ro { width: 72px; height: 72px; }
+  .rm { width: 54px; height: 54px; }
+  .ri { width: 38px; height: 38px; opacity: 0.7; }
+
+  .rb .ro { border-color: #1d4ed8; animation: po 2s ease-out infinite; }
+  .rb .rm { border-color: #1d4ed8; animation: po 2s ease-out infinite 0.35s; }
+  .rb .ri { border-color: #2563eb; }
+  .rg .ro { border-color: #16a34a; animation: po 2s ease-out infinite; }
+  .rg .rm { border-color: #16a34a; animation: po 2s ease-out infinite 0.35s; }
+  .rg .ri { border-color: #22c55e; }
+
+  .core { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: br 2s ease-in-out infinite; }
+  .cb { background: #1d4ed8; }
+  .cg { background: #15803d; }
+
+  @keyframes po { 0% { transform: scale(0.85); opacity: 0.35; } 100% { transform: scale(1.15); opacity: 0; } }
+  @keyframes br { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+  .pulse-badge { position: absolute; top: 22px; right: 18px; width: 18px; height: 18px; border-radius: 50%; background: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 600; color: white; }
+  .pulse-name { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 6px; }
+  .pulse-name-b { color: #93c5fd; }
+  .pulse-name-g { color: #86efac; }
+  .pulse-status { display: flex; align-items: center; gap: 5px; }
+  .ps-dot { width: 5px; height: 5px; border-radius: 50%; animation: br 2s ease-in-out infinite; }
+  .ps-dot-b { background: #22c55e; }
+  .ps-dot-g { background: #4ade80; }
+  .ps-txt { font-size: 9px; }
+  .ps-txt-b { color: #4ade80; }
+  .ps-txt-g { color: #86efac; }
+  .pulse-tap { position: absolute; bottom: 22px; font-size: 8px; opacity: 0.35; letter-spacing: 0.06em; }
+  .pt-b { color: #93c5fd; }
+  .pt-g { color: #86efac; }
+
+  .dest-card { background: #f8faff; border: 1px solid #dbeafe; border-radius: 10px; width: 160px; padding: 10px 12px; }
+  .dest-card-g { background: #f0fdf4; border-color: #bbf7d0; }
+  .dest-dest { font-size: 8px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 3px; }
+  .dest-title { font-size: 12px; font-weight: 600; color: #111; margin-bottom: 8px; }
+  .dest-job { display: flex; align-items: center; gap: 6px; background: white; border-radius: 5px; padding: 6px 8px; border: 1px solid #e5e7eb; }
+  .dj-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; flex-shrink: 0; }
+  .dj-name { font-size: 8px; font-weight: 600; color: #111; }
+  .dj-type { font-size: 7px; color: #6b7280; }
+  .dest-listen { display: flex; align-items: center; gap: 8px; }
+  .dl-ring { width: 24px; height: 24px; border-radius: 50%; border: 1px solid #1d4ed8; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .dl-core { width: 14px; height: 14px; border-radius: 50%; background: #1d4ed8; }
+  .dl-txt { font-size: 8px; color: #374151; line-height: 1.5; }
+  .pulse-caption { font-size: 11px; color: #888; text-align: center; max-width: 160px; line-height: 1.6; }
+
+  .note-hl { color: #1d4ed8; font-weight: 500; }
+  .job-card { background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 8px 10px; margin-bottom: 7px; }
+  .jc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
+  .jc-name { font-size: 9px; font-weight: 600; color: #111; }
+  .jc-type { font-size: 7px; color: #6b7280; }
+  .jc-badge { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 2px 6px; font-size: 7px; color: #15803d; font-weight: 500; }
+  .jc-snippet { font-size: 7px; color: #374151; line-height: 1.5; background: #f8fafc; border-radius: 4px; padding: 5px 6px; margin-bottom: 6px; }
+  .jc-actions { display: flex; gap: 4px; }
+  .jc-btn-ghost { flex: 1; background: #f3f4f6; border-radius: 6px; padding: 4px; text-align: center; font-size: 7px; color: #374151; }
+  .jc-btn-solid { flex: 1; background: #2563eb; border-radius: 6px; padding: 4px; text-align: center; font-size: 7px; color: white; font-weight: 500; }
+  .amber-flag { background: #fffbeb; border: 1px solid #fde68a; border-radius: 5px; padding: 5px 7px; margin-bottom: 7px; display: flex; align-items: center; gap: 5px; }
+  .af-dot { width: 5px; height: 5px; border-radius: 50%; background: #f59e0b; flex-shrink: 0; }
+  .af-txt { font-size: 7px; color: #92400e; line-height: 1.4; }
+  .complete-btn { background: #2563eb; border-radius: 14px; padding: 7px; text-align: center; font-size: 8px; color: white; font-weight: 500; }
+  .shield-status { display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px; }
+  .ss-dot { width: 5px; height: 5px; border-radius: 50%; background: #22c55e; }
+  .ss-txt { font-size: 7px; color: #6b7280; }
+
+  .closer { padding: 2.5rem 0 1rem; }
+  .closer-heading { font-size: 26px; font-weight: 500; color: #0f0f0f; line-height: 1.35; margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+  .closer-body { font-size: 16px; color: #444; line-height: 1.95; margin-bottom: 1.25rem; }
+  .sig { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e8e8e8; }
+  .sig-name { font-size: 15px; font-weight: 500; color: #0f0f0f; margin-bottom: 4px; }
+  .sig-title { font-size: 13px; color: #888; line-height: 1.8; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="opener">
+    <div class="opener-label">For Andrew Whiteley · Lexacom</div>
+    <div class="opener-heading">What happens when you design with Emotional Architecture.</div>
+    <div class="opener-sub">Lexacom is the most technically accomplished clinical platform in the UK. This is a demonstration of what it looks and feels like when Emotional Architecture is applied to it, and what that process revealed about the most powerful feature in the product.</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">What is Emotional Architecture</div>
+    <div class="ea-label"><div class="ea-label-dot"></div><div class="ea-label-text">A design discipline and a practice</div></div>
+    <p class="body-text">Emotional Architecture is the discipline concerned with how systems understand and respond to the emotional climate around a person, attending to tone, readiness, confidence, overwhelm, and social context. It treats emotion as structure rather than decoration.</p>
+    <p class="body-text">It is part design discipline, part practice. The principles can be learned. The application takes a lifetime to refine. In that way it is not unlike the best clinical instincts.</p>
+    <div class="pull-quote">
+      <div class="pull-quote-text">The goal is to create products that feel like they understand the human in front of them.</div>
+    </div>
+    <p class="body-text">When EA is applied to a clinical product the first question it asks is this: how does the person feel when they open this, and what does the design reveal about that feeling?</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">The starting point · Lexacom before EA</div>
+    <p class="body-text">Lexacom was chosen for this demonstration because it is genuinely extraordinary. Twenty-five years of NHS trust. Comprehension Engine. Ambient AI that listens without interrupting. A platform that does things no competitor can claim in a single product.</p>
+    <p class="body-text">The technology is flawless. EA begins with the experience of arriving at it.</p>
+
+    <div style="text-align:center;margin-bottom:8px;"><div class="before-label"><div class="before-label-text">Before EA</div></div></div>
+
+    <div class="screen-row">
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:32</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div class="d-title">Jobs</div>
+          <div style="font-size:7px;color:#6b7280;text-align:center;margin-bottom:6px;">Showing 1 of 1 jobs</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:8px 0;border-bottom:0.5px solid #e5e7eb;margin-bottom:8px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0;"></div>
+            <div><div style="font-size:8px;font-weight:600;color:#111;">Gladys Smith</div><div style="font-size:7px;color:#6b7280;">Review Nursing Home Visit</div></div>
+          </div>
+          <div style="background:#2563eb;border-radius:12px;padding:6px;text-align:center;font-size:7px;color:white;">New job &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>Function without feeling. The job is there. Its urgency is not communicated.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:27</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div class="d-title">Ambient AI</div>
+          <div style="background:#dc2626;border-radius:10px;padding:5px 8px;text-align:center;font-size:7px;color:white;margin-bottom:8px;">&#9679; Record</div>
+          <div style="background:white;border-radius:6px;border:1px solid #e5e7eb;padding:7px;margin-bottom:7px;flex:1;">
+            <div style="font-size:6px;font-weight:600;color:#374151;margin-bottom:3px;">History:</div>
+            <div style="font-size:6px;color:#4b5563;line-height:1.5;">Patient presents with chest pain... Red flags: none identified...</div>
+          </div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;">Create Job</div>
+          <div class="d-nav"><div class="d-nav-dot"></div><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>The output is extraordinary. The emotional frame around it has room to grow.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:33</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="font-size:10px;font-weight:600;color:#111;margin-bottom:8px;">Edit Job</div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:3px;">Reference</div>
+          <div style="border:1px solid #e5e7eb;border-radius:4px;padding:5px 7px;font-size:8px;color:#111;margin-bottom:8px;">Gladys Smith</div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:3px;">Comprehension Engine</div>
+          <div style="background:white;border:1px solid #e5e7eb;border-radius:5px;padding:6px;font-size:6px;color:#374151;line-height:1.5;margin-bottom:8px;flex:1;">O&#x2082; sat 83%. HR 140. <span style="color:#1d4ed8;font-weight:500;">Worsening heart failure.</span></div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;">&#10003; Complete</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>Before EA</strong><br>Process language surrounds clinical content. Gladys Smith is a reference field.</div>
+      </div>
+    </div>
+
+    <p class="body-text">The platform works. The clinical output is remarkable. When EA is applied the question becomes: what is the emotional climate of each screen, and what does it communicate to the person holding the phone?</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">What EA does to the language</div>
+    <p class="body-text">The first layer of Emotional Architecture is language. Every word in a product is a decision about how someone feels. When EA is applied, those decisions become visible and intentional.</p>
+    <div style="margin:1.75rem 0;">
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Jobs</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Notes</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Ambient AI</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Listen</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Edit Job</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Gladys Smith</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Complete</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Approve and send</div></div></div>
+      <div class="word-pair"><div class="word-before"><div class="word-label">Before EA</div><div class="word-val muted">Access Restricted</div></div><div class="word-after"><div class="word-label">After EA</div><div class="word-val">Here's what's waiting for you.</div></div></div>
+    </div>
+    <p class="body-text">Each shift changes the emotional climate of the interaction. That is the observable difference between a tool someone tolerates and a product someone loves.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">What EA revealed · the buried treasure</div>
+    <p class="body-text">When Emotional Architecture is applied to a product it surfaces what is already there. In Lexacom, it found something extraordinary sitting quietly in a compliance document.</p>
+
+    <div class="shield-hero">
+      <div class="sh-top"><div class="sh-dot"></div><div class="sh-heading">Patient Shield.</div></div>
+      <div class="sh-body">Lexacom is the only clinical AI platform that <strong>redacts patient data before it reaches the AI.</strong> The patient's identity never enters the model. This is an architectural decision and it is the answer to every clinician's unspoken anxiety about ambient AI in the room.</div>
+      <div class="sh-quote">
+        <div class="sh-quote-text">"Your patient's data is protected before AI sees it." Nobody else in the market can say this.</div>
+      </div>
+    </div>
+
+    <p class="body-text">EA moves Patient Shield to the surface. A GP who can turn to their patient mid-consultation and say "this protects your data before AI touches it" creates a trust moment that changes the room.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Where Patient Shield travels</div>
+    <p class="body-text">The redaction principle has a life beyond primary care. Wherever a professional speaks about another person in a sensitive context, the same architectural decision applies.</p>
+
+    <div class="travels-grid">
+      <div class="travel-card">
+        <div class="tc-icon">Legal</div>
+        <div class="tc-title">Solicitors and barristers</div>
+        <div class="tc-body">Privileged client information. A confession. A commercial secret. The redaction principle applies with the same force it does in a consulting room.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Social work</div>
+        <div class="tc-title">Case workers and ARRS roles</div>
+        <div class="tc-body">Notes about vulnerable children, domestic abuse situations, safeguarding cases. Redaction here carries the same professional weight.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Mental health</div>
+        <div class="tc-title">Therapists and psychiatrists</div>
+        <div class="tc-body">The most sensitive data that exists. Therapy session content is among the most private information a person can share. Patient Shield was built for exactly this.</div>
+      </div>
+      <div class="travel-card">
+        <div class="tc-icon">Financial services</div>
+        <div class="tc-title">IFAs and wealth managers</div>
+        <div class="tc-body">Client financial conversations in a regulated environment. The redaction principle travels identically from clinic to boardroom.</div>
+      </div>
+    </div>
+
+    <p class="body-text">Andrew built the answer to a question the whole market is about to start asking. EA is what makes that visible.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">Lexacom after EA · the same workflow</div>
+    <p class="body-text">Here is the same workflow, Gladys Smith, nursing home visit, as it feels when Emotional Architecture is applied throughout. The technology is identical. The emotional climate is transformed.</p>
+
+    <div style="text-align:center;margin-bottom:8px;"><div class="after-label"><div class="after-label-dot"></div><div class="after-label-text">After EA</div></div></div>
+
+    <div class="screen-row">
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:32</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;">
+            <div style="font-size:10px;font-weight:600;color:#111;">Notes</div>
+            <div style="font-size:7px;color:#6b7280;">1 needs you</div>
+          </div>
+          <div class="job-card">
+            <div class="jc-top"><div><div class="jc-name">Gladys Smith</div><div class="jc-type">Nursing Home Visit</div></div><div class="jc-badge">Approve</div></div>
+            <div class="jc-snippet">O&#x2082; sat 83%. HR 140. <span style="color:#1d4ed8;font-weight:500;">Worsening heart failure.</span></div>
+            <div class="jc-actions"><div class="jc-btn-ghost">Review</div><div class="jc-btn-solid">&#10003; Approve</div></div>
+          </div>
+          <div class="shield-status"><div class="ss-dot"></div><div class="ss-txt">Patient Shield active</div></div>
+          <div style="background:#2563eb;border-radius:12px;padding:6px;text-align:center;font-size:7px;color:white;">Start new note &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Patient name leads. Urgency is visible. Shield is present.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:27</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;">
+            <div style="font-size:10px;font-weight:600;color:#111;">Listen</div>
+            <div style="display:flex;align-items:center;gap:3px;"><div style="width:4px;height:4px;border-radius:50%;background:#22c55e;"></div><div style="font-size:7px;color:#22c55e;">Shield on</div></div>
+          </div>
+          <div style="font-size:7px;color:#6b7280;margin-bottom:8px;">Quietly in the room with you.</div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="background:#1d4ed8;border-radius:12px;padding:5px 10px;font-size:7px;color:white;display:flex;align-items:center;gap:4px;"><div style="width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.5);"></div>Listening</div>
+            <div style="background:#2563eb;border-radius:12px;padding:5px 10px;font-size:7px;color:white;">Generate</div>
+          </div>
+          <div style="background:white;border-radius:6px;border:1px solid #e5e7eb;padding:7px;margin-bottom:7px;flex:1;">
+            <div style="font-size:6px;font-weight:600;color:#374151;margin-bottom:3px;">History:</div>
+            <div style="font-size:6px;color:#4b5563;line-height:1.5;">Chest pain, intermittent. No red flags. PMH: migraines, high BP.</div>
+          </div>
+          <div style="background:#2563eb;border-radius:10px;padding:6px;text-align:center;font-size:7px;color:white;margin-top:auto;">Save to notes &rarr;</div>
+          <div class="d-nav"><div class="d-nav-dot"></div><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Red becomes blue. Record becomes Listening. Shield surfaces in the room.</div>
+      </div>
+
+      <div class="screen-col">
+        <div class="device">
+          <div class="d-status"><span class="d-time">19:33</span><span class="d-time">&#9679;&#9679;</span></div>
+          <div style="margin-bottom:8px;"><div style="font-size:10px;font-weight:600;color:#111;">Gladys Smith</div><div style="font-size:7px;color:#6b7280;">Nursing Home Visit · ready for review</div></div>
+          <div style="background:#f8fafc;border-radius:5px;padding:6px;font-size:6px;color:#374151;line-height:1.5;margin-bottom:6px;">O&#x2082; sat 83%. HR 140. BP 100/60. <span class="note-hl">Worsening heart failure.</span></div>
+          <div class="amber-flag"><div class="af-dot"></div><div class="af-txt">Clinical finding flagged. Review before approving.</div></div>
+          <div style="display:flex;gap:4px;margin-bottom:6px;">
+            <div style="flex:1;background:#f3f4f6;border-radius:6px;padding:4px;text-align:center;font-size:6px;color:#374151;">Hold</div>
+            <div style="flex:1;background:#f3f4f6;border-radius:6px;padding:4px;text-align:center;font-size:6px;color:#374151;">Add note</div>
+          </div>
+          <div class="complete-btn">&#10003; Approve and send</div>
+          <div class="d-nav"><div class="d-nav-dot on"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div><div class="d-nav-dot"></div></div>
+        </div>
+        <div class="screen-caption"><strong>After EA</strong><br>Patient name leads. Clinical flag surfaces. Approve and send.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <div class="section-label">The hello moment · EA at its most distilled</div>
+    <p class="body-text">The purest expression of Emotional Architecture in Lexacom is a screen that does not yet exist. A single second before the work begins. A breath. The app confirming it is alive, that Patient Shield is active, and that it already knows whether something is waiting.</p>
+    <p class="body-text">One tap. Two possible states. The app reads the situation and opens the right door.</p>
+
+    <div class="pulse-row">
+      <div class="pulse-col">
+        <div class="pulse-device">
+          <div class="pulse-notch"></div>
+          <div class="pulse-badge">1</div>
+          <div class="pulse-screen ps-blue">
+            <div class="ring-wrap rb">
+              <div class="ring ro"></div><div class="ring rm"></div><div class="ring ri"></div>
+              <div class="core cb"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L2 4v4c0 2.8 2.1 4.8 5 5 2.9-.2 5-2.2 5-5V4L7 1.5z" stroke="white" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+            </div>
+            <div class="pulse-name pulse-name-b">Lexacom</div>
+            <div class="pulse-status"><div class="ps-dot ps-dot-b"></div><div class="ps-txt ps-txt-b">Shield active</div></div>
+            <div class="pulse-tap pt-b">tap anywhere</div>
+          </div>
+        </div>
+        <div class="dest-card">
+          <div class="dest-dest">One tap opens</div>
+          <div class="dest-title">Notes</div>
+          <div class="dest-job"><div class="dj-dot"></div><div><div class="dj-name">Gladys Smith</div><div class="dj-type">Nursing Home Visit · ready to approve</div></div></div>
+        </div>
+        <div class="pulse-caption"><strong>Note waiting.</strong> Blue pulse. One tap to the thing that needs doing.</div>
+      </div>
+
+      <div class="pulse-col">
+        <div class="pulse-device">
+          <div class="pulse-notch"></div>
+          <div class="pulse-screen ps-green">
+            <div class="ring-wrap rg">
+              <div class="ring ro"></div><div class="ring rm"></div><div class="ring ri"></div>
+              <div class="core cg"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M7 1.5L2 4v4c0 2.8 2.1 4.8 5 5 2.9-.2 5-2.2 5-5V4L7 1.5z" stroke="white" stroke-width="1.3" stroke-linejoin="round"/></svg></div>
+            </div>
+            <div class="pulse-name pulse-name-g">Lexacom</div>
+            <div class="pulse-status"><div class="ps-dot ps-dot-g"></div><div class="ps-txt ps-txt-g">You're clear</div></div>
+            <div class="pulse-tap pt-g">tap anywhere</div>
+          </div>
+        </div>
+        <div class="dest-card dest-card-g">
+          <div class="dest-dest">One tap opens</div>
+          <div class="dest-title">Listen</div>
+          <div class="dest-listen"><div class="dl-ring"><div class="dl-core"></div></div><div class="dl-txt">Ready to record.<br>Speak naturally.</div></div>
+        </div>
+        <div class="pulse-caption"><strong>All clear.</strong> Green pulse. One tap to start recording.</div>
+      </div>
+    </div>
+
+    <p class="body-text">Blue means something is waiting. Green means space. The clinician reads the colour before they read the words. Patient Shield is present in both states, a constant the green dot communicates before anything else is read.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="closer">
+    <div class="closer-heading">You are the person who breathes life into this.</div>
+    <p class="closer-body">You built Lexacom at night because you felt something was wrong and you knew how to fix it. That instinct is still there. The technology has never been stronger. The clinical trust has never been deeper. Twenty-five thousand users are carrying something in their pocket that does not yet know how extraordinary it is.</p>
+    <p class="closer-body">Emotional Architecture is a discipline applied to what already exists. What it found inside Lexacom, sitting quietly in a compliance document, is the most important data protection principle in clinical AI. Patient Shield has the potential to travel far beyond primary care and into every profession that handles sensitive spoken information.</p>
+    <p class="closer-body">You built the foundation. The life is the next thing.</p>
+    <div class="sig">
+      <div class="sig-name">Mark Winterburn</div>
+      <div class="sig-title">Digital and Transformation Lead · Weymouth and Portland PCN<br>Co-Director · Neighbourhood CoLab CIC</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
